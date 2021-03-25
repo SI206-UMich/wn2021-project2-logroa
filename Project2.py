@@ -14,8 +14,17 @@ def get_titles_from_search_results(filename):
 
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
+    r = open(filename)
+    soup = BeautifulSoup(r, 'html.parser')
+    r.close()
+    ans = []
+    list1 = soup.find_all('tr', itemtype="http://schema.org/Book")
+    for i in list1:
+        added = (i.find('a', class_="bookTitle").text.rstrip().lstrip(), soup.find('a', class_="authorName").text.rstrip())
+        ans.append(added)
 
-    pass
+    return ans
+    
 
 
 def get_search_links():
@@ -105,23 +114,25 @@ class TestCases(unittest.TestCase):
 
     def test_get_titles_from_search_results(self):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
-
+        var = get_titles_from_search_results("search_results.htm")
         # check that the number of titles extracted is correct (20 titles)
-
+        self.assertEqual(len(var), 20)
         # check that the variable you saved after calling the function is a list
-
+        self.assertTrue(type(var) == list)
         # check that each item in the list is a tuple
-
+        for i in var:
+            self.assertTrue(type(i) == tuple)
         # check that the first book and author tuple is correct (open search_results.htm and find it)
-
+        self.assertEqual(var[0], ("Harry Potter and the Deathly Hallows (Harry Potter, #7)", "J.K. Rowling"))
         # check that the last title is correct (open search_results.htm and find it)
+        self.assertEqual(var[19], ("Harry Potter: The Prequel (Harry Potter, #0.5)", "J.K. Rowling"))
 
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
 
         # check that the length of TestCases.search_urls is correct (10 URLs)
 
-
+        pass
         # check that each URL in the TestCases.search_urls is a string
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
 
@@ -129,7 +140,7 @@ class TestCases(unittest.TestCase):
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
         # for each URL in TestCases.search_urls (should be a list of tuples)
-
+        pass
         # check that the number of book summaries is correct (10)
 
             # check that each item in the list is a tuple
@@ -145,7 +156,7 @@ class TestCases(unittest.TestCase):
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
-
+        pass
         # check that we have the right number of best books (20)
 
             # assert each item in the list of best books is a tuple
@@ -159,7 +170,7 @@ class TestCases(unittest.TestCase):
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
-
+        pass
         # call write csv on the variable you saved and 'test.csv'
 
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
