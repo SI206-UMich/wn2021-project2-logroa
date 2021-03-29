@@ -125,7 +125,11 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
-    pass
+    with open(filename, 'w', newline='') as file:
+        filewrite = csv.writer(file)
+        filewrite.writerow(["Book Title", "Author Name"])
+        for i in data:
+            filewrite.writerow(i)
 
 
 def extra_credit(filepath):
@@ -135,7 +139,16 @@ def extra_credit(filepath):
     Please see the instructions document for more information on how to complete this function.
     You do not have to write test cases for this function.
     """
-    pass
+    fp = filepath
+    r = open(fp)
+    soup = BeautifulSoup(r.read(), 'html.parser')
+    r.close()
+    ans = []
+    text = soup.find('div', id="description").text
+
+    reg = r'((\b[A-Z][a-zA-Z]* ?\b)+)'
+    list1 = re.findall(reg, text)
+    return list1
 
 class TestCases(unittest.TestCase):
 
@@ -209,19 +222,24 @@ class TestCases(unittest.TestCase):
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
-        pass
+        var = get_titles_from_search_results("search_results.htm")
         # call write csv on the variable you saved and 'test.csv'
-
+        write_csv(var, 'test.csv')
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
-
-
+        with open('test.csv', newline='') as file:
+            reader = csv.reader(file)
+            data = list(reader)
         # check that there are 21 lines in the csv
-
+        self.assertEqual(len(data), 21)
         # check that the header row is correct
-
+        self.assertEqual(data[0], ["Book Title", "Author Name"])
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
-
+        self.assertEqual(data[1], ['Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'])
         # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
+        self.assertEqual(data[20], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'])
+
+    def test_extra_credit(self):
+        print(extra_credit("extra_credit.htm"))
 
 
 
