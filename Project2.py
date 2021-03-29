@@ -66,7 +66,15 @@ def get_book_summary(book_url):
     Make sure to strip() any newlines from the book title and number of pages.
     """
 
-    pass
+    url = book_url
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    name = soup.find('h1', id="bookTitle").text.rstrip()
+    name = name[7:]
+    aut = soup.find('a', class_="authorName").text.rstrip()
+    page = soup.find('span', itemprop="numberOfPages").text.rstrip()
+    page = int(page[:-6])
+    return (name, aut, page)
 
 
 def summarize_best_books(filepath):
@@ -151,19 +159,24 @@ class TestCases(unittest.TestCase):
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
         # for each URL in TestCases.search_urls (should be a list of tuples)
-        pass
+        summaries = []
+        for i in get_search_links():
+            summaries.append(get_book_summary(i))
+            print(get_book_summary(i))
         # check that the number of book summaries is correct (10)
-
+        self.assertEqual(len(summaries), 10)
             # check that each item in the list is a tuple
-
+        for j in summaries:
+            self.assertEqual(type(j), tuple)
             # check that each tuple has 3 elements
-
+            self.assertEqual(len(j), 3)
             # check that the first two elements in the tuple are string
-
+            self.assertEqual(type(j[0]), str)
+            self.assertEqual(type(j[1]), str)
             # check that the third element in the tuple, i.e. pages is an int
-
+            self.assertEqual(type(j[2]), int)
             # check that the first book in the search has 337 pages
-
+        self.assertEqual(summaries[0][2], 337)
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
