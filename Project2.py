@@ -88,7 +88,21 @@ def summarize_best_books(filepath):
     ("Fiction", "The Testaments (The Handmaid's Tale, #2)", "https://www.goodreads.com/choiceawards/best-fiction-books-2020") 
     to your list of tuples.
     """
-    pass
+    fp = filepath
+    r = open(fp)
+    soup = BeautifulSoup(r.read(), 'html.parser')
+    r.close()
+    ans = []
+    list1 = soup.find_all('div', class_="category clearFix")
+    for i in list1:
+        link = i.find('a')
+        cat = link.text
+        cat = cat[1:-5]
+        url = link.get('href', None)
+        tit = i.find('img', class_="category__winnerImage").get('alt', None)
+        ans.append((cat, tit, url))
+    return ans
+
 
 
 def write_csv(data, filename):
@@ -162,7 +176,6 @@ class TestCases(unittest.TestCase):
         summaries = []
         for i in get_search_links():
             summaries.append(get_book_summary(i))
-            print(get_book_summary(i))
         # check that the number of book summaries is correct (10)
         self.assertEqual(len(summaries), 10)
             # check that each item in the list is a tuple
@@ -180,17 +193,19 @@ class TestCases(unittest.TestCase):
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
-        pass
+        var = summarize_best_books("best_books_2020.htm")
         # check that we have the right number of best books (20)
-
+        self.assertEqual(len(var), 20)
             # assert each item in the list of best books is a tuple
-
+        for i in var:
+            self.assertEqual(type(i), tuple)
             # check that each tuple has a length of 3
+            self.assertEqual(len(i), 3)
 
         # check that the first tuple is made up of the following 3 strings:'Fiction', "The Midnight Library", 'https://www.goodreads.com/choiceawards/best-fiction-books-2020'
-
+        self.assertEqual(var[0], ('Fiction', "The Midnight Library", 'https://www.goodreads.com/choiceawards/best-fiction-books-2020'))
         # check that the last tuple is made up of the following 3 strings: 'Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'
-
+        self.assertEqual(var[19], ('Picture Books', 'Antiracist Baby', 'https://www.goodreads.com/choiceawards/best-picture-books-2020'))
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
