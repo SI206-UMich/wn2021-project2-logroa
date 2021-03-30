@@ -148,7 +148,15 @@ def extra_credit(filepath):
 
     reg = r'((\b[A-Z][a-zA-Z]* ?\b)+)'
     list1 = re.findall(reg, text)
-    return list1
+    ans = []
+    for i in list1:
+        if len(i[0].split()) > 1:
+            str1 = i[0]
+            if str1[-1] == ' ':
+                str1 = str1.rstrip()
+            ans.append(str1)
+
+    return ans
 
 class TestCases(unittest.TestCase):
 
