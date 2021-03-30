@@ -146,14 +146,23 @@ def extra_credit(filepath):
     ans = []
     text = soup.find('div', id="description").text
 
-    reg = r'((\b[A-Z][a-zA-Z]* ?\b)+)'
+    fl2 = open("stopwords.txt")
+    sw = fl2.readlines()
+    fl2.close()
+    sw1 = []
+    for i in sw:
+        word = i.rstrip()
+        sw1.append(word[0].upper() + word[1:])
+
+    reg = r'((\b[A-Z][a-zA-Z][a-zA-Z]+( [A-Z][a-zA-Z]+)+\b))'
     list1 = re.findall(reg, text)
     ans = []
     for i in list1:
-        if len(i[0].split()) > 1:
+        if len(i[0].split()) > 1 and i[0].split()[0] not in sw1:
             str1 = i[0]
             if str1[-1] == ' ':
                 str1 = str1.rstrip()
+
             ans.append(str1)
 
     return ans
@@ -247,7 +256,7 @@ class TestCases(unittest.TestCase):
         self.assertEqual(data[20], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'])
 
     def test_extra_credit(self):
-        print(extra_credit("extra_credit.htm"))
+        self.assertEqual(len(extra_credit("extra_credit.htm")), 9)
 
 
 
