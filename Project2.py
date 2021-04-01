@@ -20,7 +20,7 @@ def get_titles_from_search_results(filename):
     ans = []
     list1 = soup.find_all('tr', itemtype="http://schema.org/Book")
     for i in list1:
-        added = (i.find('a', class_="bookTitle").text.rstrip().lstrip(), soup.find('a', class_="authorName").text.rstrip())
+        added = (i.find('a', class_="bookTitle").text.rstrip().lstrip(), i.find('a', class_="authorName").text.rstrip())
         ans.append(added)
 
     return ans
